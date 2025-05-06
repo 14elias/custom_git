@@ -7,7 +7,7 @@ class Ella:
         self.repopath = Path.cwd()/'.ella'
         self.objectpath = self.repopath/'objects'
         self.indexpath = self.repopath/'index'
-        self.headpath = self.repopath/'head'
+        self.headpath = self.repopath/'HEAD'
 
     def init(self):
         self.repopath.mkdir(exist_ok = True)
