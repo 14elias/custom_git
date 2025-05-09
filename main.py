@@ -64,6 +64,10 @@ class Ella:
         commit_file_path = commit_folder_path/commit_hash[2:]
         commit_file_path.write_text(commit_data.decode())
 
+        self.headpath.write_text(commit_hash)
+        self.indexpath.write_text('[]')
+
+
     def get_current_head(self):
         with open(self.headpath) as f:
             parent = f.read()
