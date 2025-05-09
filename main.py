@@ -1,6 +1,7 @@
 from pathlib import Path
 import hashlib
 import json
+from datetime import datetime
 
 class Ella:
     def __init__(self):
@@ -43,5 +44,33 @@ class Ella:
         index.append({"file_path":file_path,"folder_hash":folder_hash, "file_hash":file_hash})
         self.indexpath.write_text(json.dumps(index))
 
+    def commit(self,message):
+        with open(self.indexpath) as f:
+            index = f.read()
+        parent_commit = self.get_current_head()
+
+        commit_data =str( {
+            'date': str(datetime.now()),
+            'message': message,
+            'files': index,
+            'parent': parent_commit
+        }).encode()
+
+        commit_hash = self.hash_object(commit_data)
+
+        commit_folder_path=self.objectpath/commit_hash[:2]
+        commit_folder_path.mkdir(parents=True, exist_ok=True)
+
+        commit_file_path = commit_folder_path/commit_hash[2:]
+        commit_file_path.write_text(commit_data.decode())
+
+    def get_current_head(self):
+        with open(self.headpath) as f:
+            parent = f.read()
+        return parent
+
 obj = Ella()
+obj.init()
 obj.add('text1.txt')
+obj.add('text2.txt')
+obj.commit('first commit')
