@@ -49,7 +49,7 @@ class Ella:
             index = f.read()
         parent_commit = self.get_current_head()
 
-        commit_data =str( {
+        commit_data =json.dumps( {
             'date': str(datetime.now()),
             'message': message,
             'files': index,
@@ -71,10 +71,21 @@ class Ella:
     def get_current_head(self):
         with open(self.headpath) as f:
             parent = f.read()
-        return parent
+        return parent 
+    
+    def log(self):
+        current_commit_hash = self.get_current_head()
+        while(current_commit_hash):
+            with open(self.objectpath / current_commit_hash[:2] / current_commit_hash[2:]) as f:
+                commit_data = json.load(f)
+            # commit_data = json.load(self.objectpath/current_commit_hash[:2]/current_commit_hash[2:])
+            print(f'commit : {current_commit_hash}\n Date:{commit_data.get('date')}\n\n {commit_data.get('message')}')
+
+            current_commit_hash = commit_data.get('parent')
+
 
 obj = Ella()
 obj.init()
 obj.add('text1.txt')
-obj.add('text2.txt')
 obj.commit('first commit')
+obj.log()
