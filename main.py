@@ -11,11 +11,14 @@ class Ella:
         self.headpath = self.repopath/'HEAD'
 
     def init(self):
-        self.repopath.mkdir(exist_ok = True)
-        self.objectpath.mkdir(parents = True,exist_ok=True)
-        self.indexpath.write_text("[]")
-        self.headpath.write_text('')
-        print('repository initialized')
+        if not self.repopath.is_dir():
+            self.repopath.mkdir(exist_ok = True)
+            self.objectpath.mkdir(parents = True,exist_ok=True)
+            self.indexpath.write_text("[]")
+            self.headpath.write_text('')
+            print('repository initialized')
+        else:
+            print('repository reintialized')
 
     @staticmethod
     def hash_object(file):
@@ -84,8 +87,11 @@ class Ella:
             current_commit_hash = commit_data.get('parent')
 
 
-obj = Ella()
-obj.init()
-obj.add('text1.txt')
-obj.commit('first commit')
-obj.log()
+if __name__ == '__main__':
+    obj = Ella()
+    obj.init()
+    obj.add('text1.txt')
+    obj.commit('first commit')
+    obj.add('text2.txt')
+    obj.commit('second commit')
+    obj.log()
